@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NURO料金計算</title>
+
+<style>
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background: #f5f5f5;
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+  padding: 16px;
+}
+
+h2 {
+  text-align: center;
+}
+
+.item {
+  background: white;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item input {
+  transform: scale(1.5);
+}
+
+#total {
+  position: sticky;
+  bottom: 0;
+  background: #222;
+  color: white;
+  padding: 16px;
+  text-align: center;
+  font-size: 20px;
+  border-radius: 10px 10px 0 0;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background: #ff6b6b;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>NURO料金チェック</h2>
+
+<div class="item">
+  NURO光one（5500円）
+  <input type="checkbox" value="5500" data-group="plan">
+</div>
+
+<div class="item">
+  NURO光マンション（3850円）
+  <input type="checkbox" value="3850" data-group="plan">
+</div>
+
+<div class="item">
+  専門チャンネル（3300円）
+  <input type="checkbox" value="3300" data-group="tv">
+</div>
+
+<div class="item">
+  基本放送（1210円）
+  <input type="checkbox" value="1210" data-group="tv">
+</div>
+
+<div class="item">NURO光電話（550円）<input type="checkbox" value="550"></div>
+<div class="item">番号表示（440円）<input type="checkbox" value="440"></div>
+<div class="item">チューナー（550円）<input type="checkbox" value="550"></div>
+<div class="item">さくっとサポート（550円）<input type="checkbox" value="550"></div>
+<div class="item">NURO光safe（550円）<input type="checkbox" value="550"></div>
+<div class="item">くらし相談（550円）<input type="checkbox" value="550"></div>
+<div class="item">キキホショ＋（550円）<input type="checkbox" value="550"></div>
+<div class="item">ネットスーパー（660円）<input type="checkbox" value="660"></div>
+<div class="item">U-NEXT（2189円）<input type="checkbox" value="2189"></div>
+
+<button onclick="resetAll()">リセット</button>
+
+<div id="total">合計: 0円</div>
+</div>
+
+<script>
+const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+const totalDisplay = document.getElementById('total');
+
+checkboxes.forEach(cb => {
+  cb.addEventListener('change', () => {
+    
+    // 排他処理
+    if (cb.dataset.group) {
+      document.querySelectorAll(`input[data-group="${cb.dataset.group}"]`).forEach(other => {
+        if (other !== cb) other.checked = false;
+      });
+    }
+
+    calculate();
+  });
+});
+
+function calculate() {
+  let total = 0;
+  checkboxes.forEach(cb => {
+    if (cb.checked) total += parseInt(cb.value);
+  });
+  totalDisplay.textContent = "合計: " + total.toLocaleString() + "円";
+}
+
+function resetAll() {
+  checkboxes.forEach(cb => cb.checked = false);
+  calculate();
+}
+</script>
+
+</body>
+</html>

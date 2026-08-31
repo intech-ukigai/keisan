@@ -1,137 +1,117 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NURO料金計算</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NURO料金計算</title>
 
-<style>
-body {
-  font-family: sans-serif;
-  margin: 0;
-  background: #f5f5f5;
-}
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C0W71C7RB2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-C0W71C7RB2');
+  </script>
 
-.container {
-  max-width: 500px;
-  margin: auto;
-  padding: 16px;
-}
-
-h2 {
-  text-align: center;
-}
-
-.item {
-  background: white;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.item input {
-  transform: scale(1.5);
-}
-
-#total {
-  position: sticky;
-  bottom: 0;
-  background: #222;
-  color: white;
-  padding: 16px;
-  text-align: center;
-  font-size: 20px;
-  border-radius: 10px 10px 0 0;
-}
-
-button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background: #ff6b6b;
-  color: white;
-}
-</style>
+  <link rel="icon" href="icon.png">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; background: #f5f5f5; color: #222; }
+    .container { max-width: 500px; margin: auto; padding: 16px 16px 100px; }
+    h1 { margin: 8px 0 20px; text-align: center; font-size: 24px; }
+    .item { min-height: 54px; background: #fff; padding: 12px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+    .item label { flex: 1; line-height: 1.45; cursor: pointer; }
+    .item input { flex: 0 0 auto; width: 20px; height: 20px; margin: 0; accent-color: #ff6b6b; cursor: pointer; }
+    .item.auto-selected { background: #fff7f7; }
+    .note { margin: -2px 2px 12px; color: #666; font-size: 12px; line-height: 1.5; }
+    button { width: 100%; padding: 12px; margin-top: 6px; font-size: 16px; border: none; border-radius: 8px; background: #ff6b6b; color: #fff; cursor: pointer; }
+    button:hover { background: #f45555; }
+    #total { position: fixed; z-index: 10; left: 50%; bottom: 0; width: min(500px, 100%); transform: translateX(-50%); background: #222; color: #fff; padding: 18px 16px; text-align: center; font-size: 21px; font-weight: bold; border-radius: 10px 10px 0 0; box-shadow: 0 -3px 12px rgba(0,0,0,.12); }
+  </style>
 </head>
-
 <body>
+  <main class="container">
+    <h1>NURO料金チェック</h1>
 
-<div class="container">
-<h2>NURO料金チェック</h2>
+    <div class="item"><label for="plan-h">NURO光（H）（5,720円）</label><input id="plan-h" type="checkbox" value="5720" data-group="plan"></div>
+    <div class="item"><label for="plan-m">NURO光（M）（4,730円）</label><input id="plan-m" type="checkbox" value="4730" data-group="plan"></div>
 
-<div class="item">
-  NURO光one（5500円）
-  <input type="checkbox" value="5500" data-group="plan">
-</div>
+    <div class="item"><label for="tv-basic">ひかりTV　基本放送（1,210円）</label><input id="tv-basic" type="checkbox" value="1210" data-group="tv-main" data-tuner="tv-tuner"></div>
+    <div class="item"><label for="tv-channel">ひかりTV　専門チャンネル（3,300円）</label><input id="tv-channel" type="checkbox" value="3300" data-group="tv-main" data-tuner="tv-tuner"></div>
+    <div class="item"><label for="tv-video">ひかりTV　専門チャンネル・ビデオプラン（4,400円）</label><input id="tv-video" type="checkbox" value="4400" data-group="tv-main" data-tuner="tv-tuner"></div>
+    <div class="item"><label for="tv-tuner">ひかりTV　チューナー（550円）</label><input id="tv-tuner" type="checkbox" value="550" data-required-by="tv-main"></div>
+    <p class="note">※ひかりTVのプランを選ぶと、チューナーが自動で選択されます。</p>
 
-<div class="item">
-  NURO光マンション（3850円）
-  <input type="checkbox" value="3850" data-group="plan">
-</div>
+    <div class="item"><label for="tv2-basic">ひかりTV二台目　基本プラン（1,210円）</label><input id="tv2-basic" type="checkbox" value="1210" data-group="tv-second" data-tuner="tv2-tuner"></div>
+    <div class="item"><label for="tv2-channel">ひかりTV二台目　専門チャンネルプラン（3,300円）</label><input id="tv2-channel" type="checkbox" value="3300" data-group="tv-second" data-tuner="tv2-tuner"></div>
+    <div class="item"><label for="tv2-video">ひかりTV二台目　専門チャンネル・ビデオプラン（4,400円）</label><input id="tv2-video" type="checkbox" value="4400" data-group="tv-second" data-tuner="tv2-tuner"></div>
+    <div class="item"><label for="tv2-tuner">ひかりTV二台目　チューナー（550円）</label><input id="tv2-tuner" type="checkbox" value="550" data-required-by="tv-second"></div>
+    <p class="note">※ひかりTV二台目のプランを選ぶと、二台目チューナーが自動で選択されます。</p>
 
-<div class="item">
-  専門チャンネル（3300円）
-  <input type="checkbox" value="3300" data-group="tv">
-</div>
+    <div class="item"><label for="phone">NURO光でんわ（550円）</label><input id="phone" type="checkbox" value="550"></div>
+    <div class="item"><label for="number-display">番号表示（440円）</label><input id="number-display" type="checkbox" value="440"></div>
+    <div class="item"><label for="support">NUROさくっとサポート（550円）</label><input id="support" type="checkbox" value="550"></div>
+    <div class="item"><label for="safe">NURO光safe（550円）</label><input id="safe" type="checkbox" value="550"></div>
+    <div class="item"><label for="consultation">So-net くらし相談（550円）</label><input id="consultation" type="checkbox" value="550"></div>
+    <div class="item"><label for="kikihosho">キキホショ＋（550円）</label><input id="kikihosho" type="checkbox" value="550"></div>
+    <div class="item"><label for="delikichi">とくとくネットスーパーpowered byデリキチ（660円）</label><input id="delikichi" type="checkbox" value="660"></div>
+    <div class="item"><label for="unext">U-NEXT（2,189円）</label><input id="unext" type="checkbox" value="2189"></div>
 
-<div class="item">
-  基本放送（1210円）
-  <input type="checkbox" value="1210" data-group="tv">
-</div>
+    <button type="button" id="reset-button">リセット</button>
+  </main>
+  <div id="total" aria-live="polite">合計: 0円</div>
 
-<div class="item">NURO光電話（550円）<input type="checkbox" value="550"></div>
-<div class="item">NURO光電話,東海（330円）<input type="checkbox" value="550"></div>
-<div class="item">番号表示（440円）<input type="checkbox" value="440"></div>
-<div class="item">チューナー（550円）<input type="checkbox" value="550"></div>
-<div class="item">さくっとサポート（550円）<input type="checkbox" value="550"></div>
-<div class="item">NURO光safe（550円）<input type="checkbox" value="550"></div>
-<div class="item">くらし相談（550円）<input type="checkbox" value="550"></div>
-<div class="item">キキホショ＋（550円）<input type="checkbox" value="550"></div>
-<div class="item">ネットスーパー（660円）<input type="checkbox" value="660"></div>
-<div class="item">U-NEXT（2189円）<input type="checkbox" value="2189"></div>
+  <script>
+    const checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
+    const totalDisplay = document.getElementById('total');
+    let calculatorUsed = false;
 
-<button onclick="resetAll()">リセット</button>
-
-<div id="total">合計: 0円</div>
-</div>
-
-<script>
-const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-const totalDisplay = document.getElementById('total');
-
-checkboxes.forEach(cb => {
-  cb.addEventListener('change', () => {
-    
-    // 排他処理
-    if (cb.dataset.group) {
-      document.querySelectorAll(`input[data-group="${cb.dataset.group}"]`).forEach(other => {
-        if (other !== cb) other.checked = false;
-      });
+    function hasSelectedPlan(groupName) {
+      return checkboxes.some(cb => cb.dataset.group === groupName && cb.checked);
     }
 
-    calculate();
-  });
-});
+    function syncTuner(groupName) {
+      const tuner = document.querySelector(`[data-required-by="${groupName}"]`);
+      const required = hasSelectedPlan(groupName);
+      tuner.checked = required;
+      tuner.closest('.item').classList.toggle('auto-selected', required);
+    }
 
-function calculate() {
-  let total = 0;
-  checkboxes.forEach(cb => {
-    if (cb.checked) total += parseInt(cb.value);
-  });
-  totalDisplay.textContent = "合計: " + total.toLocaleString() + "円";
-}
+    function calculate() {
+      const total = checkboxes.reduce((sum, cb) => sum + (cb.checked ? Number(cb.value) : 0), 0);
+      totalDisplay.textContent = `合計: ${total.toLocaleString('ja-JP')}円`;
+    }
 
-function resetAll() {
-  checkboxes.forEach(cb => cb.checked = false);
-  calculate();
-}
-</script>
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', () => {
+        if (cb.dataset.requiredBy && hasSelectedPlan(cb.dataset.requiredBy) && !cb.checked) {
+          cb.checked = true;
+          return;
+        }
 
+        if (cb.dataset.group && cb.checked) {
+          checkboxes.forEach(other => {
+            if (other !== cb && other.dataset.group === cb.dataset.group) other.checked = false;
+          });
+        }
+
+        if (cb.dataset.tuner) syncTuner(cb.dataset.group);
+        calculate();
+
+        if (!calculatorUsed) {
+          calculatorUsed = true;
+          if (typeof gtag === 'function') gtag('event', 'calculator_use');
+        }
+      });
+    });
+
+    document.getElementById('reset-button').addEventListener('click', () => {
+      checkboxes.forEach(cb => { cb.checked = false; });
+      document.querySelectorAll('.auto-selected').forEach(item => item.classList.remove('auto-selected'));
+      calculate();
+      if (typeof gtag === 'function') gtag('event', 'calculator_reset');
+    });
+  </script>
 </body>
 </html>

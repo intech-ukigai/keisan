@@ -34,7 +34,7 @@ button:hover { background:#409544; }
 <main class="container">
 
 <section class="item">
-  <div class="label-title">担当者</div>
+  <div class="label-title">発注者</div>
   <select id="staff">
     <option>波多江</option>
     <option>竹井</option>
@@ -114,7 +114,7 @@ function generate(){
   });
 
   const note = document.getElementById('note').value.trim();
-  const text = `【資材発注書】\n担当者：${document.getElementById('staff').value}\n\n【必要資材】\n${lines.join('\n')}\n\n【備考】\n${note}`;
+  const text = `【資材発注書】\n発注者：${document.getElementById('staff').value}\n\n【必要資材】\n${lines.join('\n')}\n\n【備考】\n${note}`;
 
   const result = document.getElementById('result');
   result.textContent = text;

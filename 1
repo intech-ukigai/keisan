@@ -1,117 +1,142 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NURO料金計算</title>
-
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C0W71C7RB2"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-C0W71C7RB2');
-  </script>
-
-  <link rel="icon" href="icon.png">
-  <style>
-    * { box-sizing: border-box; }
-    body { font-family: sans-serif; margin: 0; background: #f5f5f5; color: #222; }
-    .container { max-width: 500px; margin: auto; padding: 16px 16px 100px; }
-    h1 { margin: 8px 0 20px; text-align: center; font-size: 24px; }
-    .item { min-height: 54px; background: #fff; padding: 12px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; gap: 14px; }
-    .item label { flex: 1; line-height: 1.45; cursor: pointer; }
-    .item input { flex: 0 0 auto; width: 20px; height: 20px; margin: 0; accent-color: #ff6b6b; cursor: pointer; }
-    .item.auto-selected { background: #fff7f7; }
-    .note { margin: -2px 2px 12px; color: #666; font-size: 12px; line-height: 1.5; }
-    button { width: 100%; padding: 12px; margin-top: 6px; font-size: 16px; border: none; border-radius: 8px; background: #ff6b6b; color: #fff; cursor: pointer; }
-    button:hover { background: #f45555; }
-    #total { position: fixed; z-index: 10; left: 50%; bottom: 0; width: min(500px, 100%); transform: translateX(-50%); background: #222; color: #fff; padding: 18px 16px; text-align: center; font-size: 21px; font-weight: bold; border-radius: 10px 10px 0 0; box-shadow: 0 -3px 12px rgba(0,0,0,.12); }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>資材発注書</title>
+<style>
+* { box-sizing:border-box; }
+body { font-family:sans-serif; background:#f5f5f5; margin:0; color:#222; }
+.header { background:#000; color:#fff; padding:14px 20px; font-size:20px; font-weight:bold; width:100%; }
+.container { max-width:500px; margin:20px auto; padding:0 10px 30px; }
+.item { background:#fff; padding:12px; margin-bottom:12px; border-radius:10px; }
+.label-title { background:#222; color:#fff; padding:6px 10px; border-radius:6px; margin-bottom:10px; font-size:14px; }
+select, textarea { width:100%; padding:9px; border:1px solid #bbb; border-radius:5px; font-size:16px; }
+textarea { min-height:120px; resize:vertical; }
+.material { display:grid; grid-template-columns:24px 1fr 76px; gap:8px; align-items:center; min-height:44px; padding:7px 2px; border-bottom:1px solid #eee; }
+.material:last-child { border-bottom:none; }
+.material input[type="checkbox"] { width:20px; height:20px; margin:0; accent-color:#4CAF50; cursor:pointer; }
+.material label { line-height:1.4; cursor:pointer; }
+.quantity { width:100%; padding:7px 4px; border:1px solid #aaa; border-radius:5px; font-size:16px; text-align:center; }
+.quantity:disabled { background:#eee; color:#999; }
+.quantity-wrap { display:flex; align-items:center; gap:3px; font-size:13px; white-space:nowrap; }
+.hint { color:#666; font-size:12px; line-height:1.5; margin:8px 2px 0; }
+button { width:100%; padding:12px; margin-top:10px; border:none; border-radius:10px; background:#4CAF50; color:#fff; font-size:16px; cursor:pointer; }
+button:hover { background:#409544; }
+#copyButton { background:#ff6b6b; }
+#copyButton:hover { background:#f45555; }
+#result { display:none; white-space:pre-wrap; background:#fff; padding:12px; margin-top:12px; border-radius:10px; overflow-wrap:anywhere; line-height:1.6; }
+@media (max-width:390px) { .material { grid-template-columns:22px 1fr 68px; gap:6px; } }
+</style>
 </head>
 <body>
-  <main class="container">
-    <h1>NURO料金チェック</h1>
+<div class="header">資材発注書</div>
+<main class="container">
 
-    <div class="item"><label for="plan-h">NURO光（H）（5,720円）</label><input id="plan-h" type="checkbox" value="5720" data-group="plan"></div>
-    <div class="item"><label for="plan-m">NURO光（M）（4,730円）</label><input id="plan-m" type="checkbox" value="4730" data-group="plan"></div>
+<section class="item">
+  <div class="label-title">担当者</div>
+  <select id="staff">
+    <option>波多江</option>
+    <option>竹井</option>
+  </select>
+</section>
 
-    <div class="item"><label for="tv-basic">ひかりTV　基本放送（1,210円）</label><input id="tv-basic" type="checkbox" value="1210" data-group="tv-main" data-tuner="tv-tuner"></div>
-    <div class="item"><label for="tv-channel">ひかりTV　専門チャンネル（3,300円）</label><input id="tv-channel" type="checkbox" value="3300" data-group="tv-main" data-tuner="tv-tuner"></div>
-    <div class="item"><label for="tv-video">ひかりTV　専門チャンネル・ビデオプラン（4,400円）</label><input id="tv-video" type="checkbox" value="4400" data-group="tv-main" data-tuner="tv-tuner"></div>
-    <div class="item"><label for="tv-tuner">ひかりTV　チューナー（550円）</label><input id="tv-tuner" type="checkbox" value="550" data-required-by="tv-main"></div>
-    <p class="note">※ひかりTVのプランを選ぶと、チューナーが自動で選択されます。</p>
+<section class="item">
+  <div class="label-title">必要資材</div>
+  <div id="materials"></div>
+</section>
 
-    <div class="item"><label for="tv2-basic">ひかりTV二台目　基本プラン（1,210円）</label><input id="tv2-basic" type="checkbox" value="1210" data-group="tv-second" data-tuner="tv2-tuner"></div>
-    <div class="item"><label for="tv2-channel">ひかりTV二台目　専門チャンネルプラン（3,300円）</label><input id="tv2-channel" type="checkbox" value="3300" data-group="tv-second" data-tuner="tv2-tuner"></div>
-    <div class="item"><label for="tv2-video">ひかりTV二台目　専門チャンネル・ビデオプラン（4,400円）</label><input id="tv2-video" type="checkbox" value="4400" data-group="tv-second" data-tuner="tv2-tuner"></div>
-    <div class="item"><label for="tv2-tuner">ひかりTV二台目　チューナー（550円）</label><input id="tv2-tuner" type="checkbox" value="550" data-required-by="tv-second"></div>
-    <p class="note">※ひかりTV二台目のプランを選ぶと、二台目チューナーが自動で選択されます。</p>
+<section class="item">
+  <div class="label-title">備考</div>
+  <textarea id="note" placeholder="前回のクリアファイルが余っている場合等はクリアファイルの必要枚数を教えてください。指定がなかったら申込書と同じ枚数送ります。"></textarea>
+  <p class="hint">※入力しなかった場合、発注書の備考欄は空欄になります。</p>
+</section>
 
-    <div class="item"><label for="phone">NURO光でんわ（550円）</label><input id="phone" type="checkbox" value="550"></div>
-    <div class="item"><label for="number-display">番号表示（440円）</label><input id="number-display" type="checkbox" value="440"></div>
-    <div class="item"><label for="support">NUROさくっとサポート（550円）</label><input id="support" type="checkbox" value="550"></div>
-    <div class="item"><label for="safe">NURO光safe（550円）</label><input id="safe" type="checkbox" value="550"></div>
-    <div class="item"><label for="consultation">So-net くらし相談（550円）</label><input id="consultation" type="checkbox" value="550"></div>
-    <div class="item"><label for="kikihosho">キキホショ＋（550円）</label><input id="kikihosho" type="checkbox" value="550"></div>
-    <div class="item"><label for="delikichi">とくとくネットスーパーpowered byデリキチ（660円）</label><input id="delikichi" type="checkbox" value="660"></div>
-    <div class="item"><label for="unext">U-NEXT（2,189円）</label><input id="unext" type="checkbox" value="2189"></div>
+<button type="button" id="generateButton">生成</button>
+<button type="button" id="copyButton">コピー</button>
+<div id="result" aria-live="polite"></div>
+</main>
 
-    <button type="button" id="reset-button">リセット</button>
-  </main>
-  <div id="total" aria-live="polite">合計: 0円</div>
+<script>
+const materialNames = [
+  'NURO光（H）カタログ',
+  'NURO光（H）申込書',
+  'NURO光（H）今後の流れ',
+  'NURO光（H）６万円',
+  'NURO光（H）２万円',
+  'NURO光（H）４万円',
+  'NURO光（H）違約金サポート',
+  'NURO光（M）カタログ',
+  'NURO光（M）申込書',
+  'NURO光（M）今後の流れ',
+  'お支払方法ご登録のご案内'
+];
 
-  <script>
-    const checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
-    const totalDisplay = document.getElementById('total');
-    let calculatorUsed = false;
+const materials = document.getElementById('materials');
 
-    function hasSelectedPlan(groupName) {
-      return checkboxes.some(cb => cb.dataset.group === groupName && cb.checked);
+materialNames.forEach((name, index) => {
+  const row = document.createElement('div');
+  row.className = 'material';
+  row.innerHTML = `
+    <input type="checkbox" id="material-${index}" data-name="${name}">
+    <label for="material-${index}">${name}</label>
+    <span class="quantity-wrap"><input class="quantity" type="number" min="1" step="1" inputmode="numeric" aria-label="${name}の必要枚数" disabled>枚</span>
+  `;
+  materials.appendChild(row);
+});
+
+document.querySelectorAll('.material input[type="checkbox"]').forEach(checkbox => {
+  checkbox.addEventListener('change', () => {
+    const quantity = checkbox.closest('.material').querySelector('.quantity');
+    quantity.disabled = !checkbox.checked;
+    if (checkbox.checked) {
+      if (!quantity.value || Number(quantity.value) < 1) quantity.value = '1';
+      quantity.focus();
+      quantity.select();
+    } else {
+      quantity.value = '';
     }
+  });
+});
 
-    function syncTuner(groupName) {
-      const tuner = document.querySelector(`[data-required-by="${groupName}"]`);
-      const required = hasSelectedPlan(groupName);
-      tuner.checked = required;
-      tuner.closest('.item').classList.toggle('auto-selected', required);
-    }
+function generate(){
+  const selected = Array.from(document.querySelectorAll('.material input[type="checkbox"]:checked'));
+  if (selected.length === 0) {
+    alert('必要な資材を1つ以上選択してください。');
+    return;
+  }
 
-    function calculate() {
-      const total = checkboxes.reduce((sum, cb) => sum + (cb.checked ? Number(cb.value) : 0), 0);
-      totalDisplay.textContent = `合計: ${total.toLocaleString('ja-JP')}円`;
-    }
+  const lines = selected.map(checkbox => {
+    const quantityInput = checkbox.closest('.material').querySelector('.quantity');
+    const quantity = Math.max(1, Math.floor(Number(quantityInput.value) || 1));
+    quantityInput.value = quantity;
+    return `・${checkbox.dataset.name}：${quantity}枚`;
+  });
 
-    checkboxes.forEach(cb => {
-      cb.addEventListener('change', () => {
-        if (cb.dataset.requiredBy && hasSelectedPlan(cb.dataset.requiredBy) && !cb.checked) {
-          cb.checked = true;
-          return;
-        }
+  const note = document.getElementById('note').value.trim();
+  const text = `【資材発注書】\n担当者：${document.getElementById('staff').value}\n\n【必要資材】\n${lines.join('\n')}\n\n【備考】\n${note}`;
 
-        if (cb.dataset.group && cb.checked) {
-          checkboxes.forEach(other => {
-            if (other !== cb && other.dataset.group === cb.dataset.group) other.checked = false;
-          });
-        }
+  const result = document.getElementById('result');
+  result.textContent = text;
+  result.style.display = 'block';
+}
 
-        if (cb.dataset.tuner) syncTuner(cb.dataset.group);
-        calculate();
+async function copyText(){
+  const result = document.getElementById('result');
+  if (!result.textContent) {
+    alert('先に「生成」を押してください。');
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(result.textContent);
+    alert('コピーしました。');
+  } catch (error) {
+    alert('コピーできませんでした。生成結果を選択してコピーしてください。');
+  }
+}
 
-        if (!calculatorUsed) {
-          calculatorUsed = true;
-          if (typeof gtag === 'function') gtag('event', 'calculator_use');
-        }
-      });
-    });
-
-    document.getElementById('reset-button').addEventListener('click', () => {
-      checkboxes.forEach(cb => { cb.checked = false; });
-      document.querySelectorAll('.auto-selected').forEach(item => item.classList.remove('auto-selected'));
-      calculate();
-      if (typeof gtag === 'function') gtag('event', 'calculator_reset');
-    });
-  </script>
+document.getElementById('generateButton').addEventListener('click', generate);
+document.getElementById('copyButton').addEventListener('click', copyText);
+</script>
 </body>
 </html>
